@@ -1,0 +1,8 @@
+#todoList {
+  margin: 35px 0;
+  height: 350px;
+  overflow-y: scroll;
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 30px;
+}

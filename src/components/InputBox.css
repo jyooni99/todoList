@@ -1,0 +1,40 @@
+#inputBox {
+  width: 100%;
+  background-color: #e6e6e6;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50px;
+  border-radius: 30px;
+}
+
+#todoInput {
+  width: 100%;
+  border: none;
+  background-color: transparent;
+  padding: 0 20px 0 30px;
+  font-size: 16px;
+  outline: none;
+  font-family: "Noto Sans KR";
+}
+
+/*자동 완성시 background 채워지는 것 지우기*/
+input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 500px #e6e6e6 inset !important;
+}
+
+#addBtn {
+  width: 35%;
+  height: 100%;
+  border: none;
+  border-radius: 30px;
+  background-color: #fe7f59;
+  transition: 0.3s;
+  font-weight: 600;
+  color: #fff;
+}
+
+#addBtn:hover {
+  background-color: #ff5926;
+  cursor: pointer;
+}

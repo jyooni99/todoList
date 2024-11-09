@@ -1,87 +1,74 @@
 import "./App.css";
-import React, { useState, useRef } from "react";
+import React, { useRef, useReducer, useCallback } from "react";
 import InputBox from "./components/InputBox";
 import List from "./components/List";
 import Title from "./components/Title";
 import Count from "./components/Count";
 
-const mockData = [
-  {
-    id: 0,
-    isDone: false,
-    isEditing: false,
-    isDisabled: true,
-    content: "투두리스트 만들기",
-  },
-  {
-    id: 1,
-    isDone: false,
-    isEditing: false,
-    isDisabled: true,
-    content: "투두리스트 Create 구현",
-  },
-  {
-    id: 2,
-    isDone: false,
-    isEditing: false,
-    isDisabled: true,
-    content: "저녁 맛있는 거 먹기",
-  },
-];
+function reducer(todos, action) {
+  switch (action.type) {
+    case "CREATE":
+      return [action.data, ...todos];
 
-function App() {
-  const [todos, setTodos] = useState(mockData);
-  const id = useRef(3);
+    case "CHECK":
+      return todos.map((todo) =>
+        todo.id === action.targetId ? { ...todo, isDone: !todo.isDone } : todo
+      );
 
-  const onCreate = (content) => {
-    const newTodo = {
-      id: id.current++,
-      isDone: false,
-      isEditing: false,
-      isDisabled: true,
-      content: content,
-    };
-
-    setTodos([newTodo, ...todos]);
-  };
-
-  const onChecked = (targetId) => {
-    setTodos(
-      todos.map((todo) =>
-        todo.id === targetId ? { ...todo, isDone: !todo.isDone } : todo
-      )
-    );
-  };
-
-  const onEditing = (targetId, content) => {
-    setTodos(
-      todos.map((todo) =>
-        todo.id === targetId
+    case "EDIT":
+      return todos.map((todo) =>
+        todo.id === action.targetId
           ? {
               ...todo,
               isEditing: !todo.isEditing,
               isDisabled: !todo.isDisabled,
-              content: content,
+              content: action.content,
             }
           : { ...todo, isEditing: false, isDisabled: true }
-      )
-    );
-  };
+      );
 
-  const onDelete = (targetId) => {
-    setTodos(todos.filter((todo) => todo.id !== targetId));
-  };
+    case "DELETE":
+      return todos.filter((todo) => todo.id !== action.targetId);
+
+    default:
+      return todos;
+  }
+}
+
+function App() {
+  const [todos, dispatch] = useReducer(reducer, []);
+  const id = useRef(0);
+
+  const handleCreate = useCallback((content) => {
+    dispatch({
+      type: "CREATE",
+      data: {
+        id: id.current++,
+        isDone: false,
+        isEditing: false,
+        isDisabled: true,
+        content,
+      },
+    });
+  }, []);
+
+  const handleAction = useCallback(
+    (type) => (targetId, content) => {
+      dispatch({ type, targetId, content });
+    },
+    []
+  );
 
   return (
     <div id="wrap">
       <form id="todos" action="">
         <Title />
-        <InputBox onCreate={onCreate} />
+        <InputBox createTodo={handleCreate} />
         <List
-          onChecked={onChecked}
-          onEditing={onEditing}
-          onDelete={onDelete}
           todos={todos}
+          onChecked={handleAction("CHECK")}
+          onEditToggle={handleAction("EDIT")}
+          onDelete={handleAction("DELETE")}
         />
         <Count todos={todos} />
       </form>

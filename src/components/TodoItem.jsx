@@ -1,9 +1,9 @@
 import React, { useState, useRef, useEffect } from "react";
 import "./TodoItem.css";
 
-const TodoItem = ({ todo, onChecked, onEditing, onDelete }) => {
+const TodoItem = ({ todo, onChecked, onEditToggle, onDelete }) => {
   const { id, isEditing, isDone, isDisabled, content } = todo;
-  const [value, setValue] = useState(content);
+  const [inputValue, setInputValue] = useState(content);
 
   const inputRef = useRef(null);
 
@@ -13,24 +13,31 @@ const TodoItem = ({ todo, onChecked, onEditing, onDelete }) => {
     }
   }, [isEditing]);
 
+  const handleEditDone = (e) => {
+    if (e.key === "Enter") {
+      onEditToggle(id, inputValue);
+    }
+  };
+
+  const inputClassName = `content ${isDone && !isEditing ? "isDone" : ""}`;
+
   return (
     <li className="todoItem">
       <input type="checkbox" checked={isDone} onChange={() => onChecked(id)} />
       <input
         type="text"
-        className={
-          isDone === true && isEditing === false ? "content isDone" : "content"
-        }
+        className={inputClassName}
         disabled={isDisabled}
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
+        value={inputValue}
+        onChange={(e) => setInputValue(e.target.value)}
+        onKeyDown={handleEditDone}
         ref={inputRef}
       />
       <div className="todoBtnBox">
         <button
           className="changeBtn"
           type="button"
-          onClick={() => onEditing(id, value)}
+          onClick={() => onEditToggle(id, inputValue)}
         >
           {isEditing ? "완료" : "수정"}
         </button>
@@ -46,4 +53,4 @@ const TodoItem = ({ todo, onChecked, onEditing, onDelete }) => {
   );
 };
 
-export default TodoItem;
+export default React.memo(TodoItem);

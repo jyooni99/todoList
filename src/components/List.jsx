@@ -1,23 +1,21 @@
-import React from "react";
 import "./List.css";
+import React from "react";
 import TodoItem from "./TodoItem";
 
-const List = ({ todos, onChecked, onEditing, onDelete }) => {
+const List = ({ todos, onChecked, onEditToggle, onDelete }) => {
   return (
     <ul id="todoList">
-      {todos.map((todo) => {
-        return (
-          <TodoItem
-            key={todo.id}
-            todo={todo}
-            onChecked={onChecked}
-            onEditing={onEditing}
-            onDelete={onDelete}
-          />
-        );
-      })}
+      {todos.map((todo) => (
+        <TodoItem
+          key={todo.id}
+          todo={todo}
+          onChecked={onChecked}
+          onEditToggle={onEditToggle}
+          onDelete={onDelete}
+        />
+      ))}
     </ul>
   );
 };
 
-export default List;
+export default React.memo(List);

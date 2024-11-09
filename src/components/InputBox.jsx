@@ -1,23 +1,19 @@
 import React, { useState } from "react";
 import "./InputBox.css";
 
-const InputBox = ({ onCreate }) => {
+const InputBox = ({ createTodo }) => {
   const [value, setValue] = useState("");
 
-  const onSubmit = () => {
+  const handleSubmit = () => {
     if (value === "") return;
-    onCreate(value);
+    createTodo(value);
     setValue("");
   };
 
-  const onKeySubmit = (e) => {
-    if (e.keyCode === 13) {
-      onSubmit();
+  const handleKeyUp = (e) => {
+    if (e.key === "Enter") {
+      handleSubmit();
     }
-  };
-
-  const onChangeValue = (e) => {
-    setValue(e.target.value);
   };
 
   return (
@@ -27,11 +23,11 @@ const InputBox = ({ onCreate }) => {
         id="todoInput"
         placeholder="Add Your Task"
         value={value}
-        onChange={onChangeValue}
-        onKeyDown={onKeySubmit}
+        onChange={(e) => setValue(e.target.value)}
+        onKeyUp={handleKeyUp}
         autoFocus
       />
-      <button id="addBtn" type="button" onClick={onSubmit}>
+      <button id="addBtn" type="button" onClick={handleSubmit}>
         ADD
       </button>
     </div>
